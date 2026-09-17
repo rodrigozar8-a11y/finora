@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#090c11"><meta name="description" content="Finora: seguimiento, aprendizaje y simulación de inversiones."><link rel="manifest" href="/static/manifest.webmanifest"><link rel="icon" href="/static/icon.svg" type="image/svg+xml">
+<title>Finora — Beta</title>
+<style>
+:root{--bg:#090c11;--p:#111720;--p2:#151c26;--line:#252e3b;--t:#f3f6fb;--m:#96a0b0;--a:#8ab4ff;--g:#9ce6c3;--r:#ff9d9d}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#080b10,#0e131a);color:var(--t);font:14px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{border-right:1px solid var(--line);padding:22px 15px;background:#090c11f2;position:sticky;top:0;height:100vh}.brand{font-weight:850;font-size:24px;letter-spacing:-.05em;padding:2px 10px 24px}.brand i{font-style:normal;color:var(--a)}
+nav button{width:100%;border:0;background:transparent;color:var(--m);padding:11px 12px;border-radius:10px;text-align:left;margin:2px 0}nav button.active,nav button:hover{background:var(--p2);color:var(--t)}
+.side{position:absolute;bottom:17px;left:17px;right:17px;color:var(--m);font-size:11px;line-height:1.5;border:1px solid var(--line);padding:10px;border-radius:11px;background:var(--p)}
+main{width:100%;max-width:1480px;margin:auto;padding:27px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}h1{font-size:29px;letter-spacing:-.04em;margin:0 0 4px}h2{font-size:17px;margin:0}.muted{color:var(--m)}.pill,.tag{display:inline-flex;padding:5px 8px;border-radius:999px;background:#1a2330;border:1px solid var(--line);font-size:10px;color:#bcc6d5}
+.grid{display:grid;gap:14px}.cards{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.5fr 1fr}.three{grid-template-columns:repeat(3,1fr)}.section{margin-top:14px}
+.card{background:linear-gradient(180deg,var(--p2),var(--p));border:1px solid var(--line);border-radius:15px;padding:17px}.label{font-size:11px;color:var(--m);margin-bottom:7px}.big{font-size:27px;font-weight:780;letter-spacing:-.05em}
+.green{color:var(--g)}.red{color:var(--r)}.btn{border:1px solid var(--line);background:#19212c;color:var(--t);padding:9px 12px;border-radius:10px}.btn.primary{background:#e1eaff;color:#0a1119;border-color:#e1eaff;font-weight:700}.btn.small{padding:6px 8px;font-size:11px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:11px}.notice{border:1px solid #2b394c;background:#101823;color:#becade;padding:11px;border-radius:11px;font-size:12px;line-height:1.5}
+.page{display:none}.page.active{display:block}table{width:100%;border-collapse:collapse}th,td{padding:11px 7px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}th{color:var(--m);font-size:10px}.asset{display:flex;align-items:center;gap:9px}.icon{width:33px;height:33px;display:grid;place-items:center;border-radius:9px;background:#202a39;font-weight:800;font-size:10px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:11px;color:var(--m)}input,select,textarea{width:100%;background:#0b1017;color:var(--t);border:1px solid var(--line);border-radius:9px;padding:9px;outline:0}textarea{min-height:95px}.full{grid-column:1/-1}
+.chart{width:100%;height:245px}.results{display:grid;gap:8px}.result{display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0c1118}.auth{min-height:100vh;display:grid;place-items:center;padding:20px}.authbox{width:min(460px,100%);background:var(--p);border:1px solid var(--line);border-radius:16px;padding:22px}.hidden{display:none!important}
+.lesson{min-height:160px}.lesson h3{margin:10px 0 7px;font-size:15px}.lesson p{font-size:12px;line-height:1.6;color:var(--m)}.premium-overlay{display:grid;place-items:center;position:absolute;inset:0;background:#090c11bb}.lock{position:relative;overflow:hidden}.lock .blur{filter:blur(4px);opacity:.5}
+.news{padding:12px 0;border-bottom:1px solid var(--line)}.news:last-child{border-bottom:0}.news a{color:var(--t);text-decoration:none}.news .meta{font-size:10px;color:var(--m);margin-top:4px}
+@media(max-width:1050px){.app{grid-template-columns:1fr}aside{height:auto;position:static;border-right:0;border-bottom:1px solid var(--line)}nav{display:flex;overflow:auto}nav button{white-space:nowrap}.side{display:none}.two,.three,.cards{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){main{padding:15px}.cards,.two,.three,.form{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div id="authView" class="auth">
+  <div class="authbox">
+    <div class="brand">Fin<i>ora</i></div>
+    <div class="head"><div><h2 id="authTitle">Entrar</h2><div class="muted">Beta de seguimiento y aprendizaje financiero</div></div></div>
+    <div class="field"><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
+    <div class="field section"><label>Contraseña (mín. 8 caracteres)</label><input id="authPassword" type="password" autocomplete="current-password"></div>
+    <button class="btn primary section" style="width:100%" onclick="authSubmit()">Continuar</button>
+    <button class="btn section" style="width:100%" onclick="toggleAuth()"><span id="authToggle">Crear cuenta</span></button>
+    <div id="authMsg" class="notice section hidden"></div>
+  </div>
+</div>
+
+<div id="appView" class="app hidden">
+<aside><div class="brand">Fin<i>ora</i></div><nav>
+<button class="active" data-page="dashboard">Resumen</button>
+<button data-page="portfolio">Mi cartera</button>
+<button data-page="markets">Mercados</button>
+<button data-page="news">Noticias</button>
+<button data-page="simulator">Simulador</button>
+<button data-page="learn">Aprender</button>
+<button data-page="journal">Diario</button>
+</nav><div class="side">Beta funcional. No ejecuta operaciones ni custodia dinero.</div></aside>
+<main>
+<div class="top"><div><h1 id="title">Resumen</h1><div class="muted">Sigue tus inversiones que están en otros brokers.</div></div><div><span class="pill" id="status">LOCAL</span> <button class="btn small" onclick="logout()">Salir</button></div></div>
+
+<section id="dashboard" class="page active">
+<div class="grid cards"><div class="card"><div class="label">Patrimonio</div><div class="big" id="dVal">€0</div></div><div class="card"><div class="label">Invertido</div><div class="big" id="dCost">€0</div></div><div class="card"><div class="label">Resultado</div><div class="big" id="dProfit">€0</div></div><div class="card"><div class="label">Rentabilidad</div><div class="big" id="dRet">0%</div></div></div>
+<div class="grid two section"><div class="card"><div class="head"><h2>Evolución</h2><span class="tag">Histórico real cuando conectemos series</span></div><svg id="chart" class="chart" viewBox="0 0 850 245" preserveAspectRatio="none"></svg></div><div class="card"><div class="head"><h2>Distribución</h2></div><div id="alloc"></div></div></div>
+<div class="grid two section"><div class="card"><div class="head"><h2>Mercado</h2><button class="btn small" onclick="refreshAll()">Actualizar</button></div><div id="marketStatus" class="notice"></div></div><div class="card"><div class="head"><h2>Premium</h2></div><div id="premiumBox" class="notice"></div><button class="btn primary section" onclick="buyPremium()">Activar Premium</button></div></div>
+</section>
+
+<section id="portfolio" class="page">
+<div class="head"><h2>Mi cartera</h2><button class="btn primary" onclick="openModal()">+ Posición</button></div>
+<div class="notice">Introduce las posiciones que tienes en otros brokers. Finora sigue y analiza esos activos; no mueve el dinero.</div>
+<div class="card section"><table><thead><tr><th>Activo</th><th>Tipo</th><th>Unidades</th><th>Precio</th><th>Valor</th><th>Resultado</th><th></th></tr></thead><tbody id="holdings"></tbody></table></div>
+</section>
+
+<section id="markets" class="page">
+<div class="card"><div class="head"><h2>Buscador de mercados</h2><button class="btn" onclick="health()">Estado</button></div><div class="form"><div class="field full"><label>Busca ticker o nombre</label><input id="search" placeholder="AAPL, VWCE, Tesla..."></div><button class="btn primary full" onclick="doSearch()">Buscar</button></div><div class="results section" id="searchResults"></div></div>
+</section>
+
+<section id="news" class="page">
+<div class="card"><div class="head"><div><h2>Noticias</h2><div class="muted">Cada noticia debe mantener su fuente y enlace.</div></div><button class="btn" onclick="loadNews()">Actualizar</button></div><div id="newsBox" class="notice">Cargando...</div></div>
+</section>
+
+<section id="simulator" class="page">
+<div class="card"><div class="head"><div><h2>Simulador de cartera</h2><div class="muted">Los rendimientos son hipótesis, no predicciones.</div></div><button class="btn" onclick="addSim()">+ Activo</button></div>
+<div class="form"><div class="field"><label>Capital inicial (€)</label><input id="sI" type="number" value="2545" oninput="simRun()"></div><div class="field"><label>Aportación mensual (€)</label><input id="sM" type="number" value="170" oninput="simRun()"></div><div class="field"><label>Años</label><input id="sY" type="number" value="15" oninput="simRun()"></div><div class="field"><label>Inflación (%)</label><input id="sInf" type="number" value="2" step=".1" oninput="simRun()"></div></div>
+<table class="section"><thead><tr><th>Activo</th><th>%</th><th>Rent. anual %</th><th>Coste %</th><th></th></tr></thead><tbody id="simRows"></tbody></table>
+<div class="grid three section"><div class="card"><div class="label">Asignado</div><div class="big" id="sAlloc">0%</div></div><div class="card"><div class="label">Valor nominal</div><div class="big" id="sFinal">€0</div></div><div class="card"><div class="label">Valor real</div><div class="big" id="sReal">€0</div></div></div>
+<div id="simMsg" class="notice section"></div></div>
+</section>
+
+<section id="learn" class="page"><div class="head"><h2>Academia</h2><span class="pill" id="planLabel">Gratis</span></div><div class="grid three" id="lessons"></div></section>
+
+<section id="journal" class="page"><div class="grid two"><div class="card"><h2>Diario</h2><div class="form section"><div class="field full"><label>Ticker</label><input id="jT"></div><div class="field"><label>Fecha</label><input id="jD" type="date"></div><div class="field"><label>Horizonte</label><select id="jH"><option>Largo plazo</option><option>Medio plazo</option><option>Corto plazo</option></select></div><div class="field full"><label>Tesis / motivo</label><textarea id="jX"></textarea></div><button class="btn primary full" onclick="saveJournal()">Guardar</button></div></div><div class="card"><h2>Historial</h2><div id="journalList" class="section"></div></div></div></section>
+</main></div>
+
+<div id="modal" class="modal" style="position:fixed;inset:0;background:#000b;display:none;place-items:center;padding:20px;z-index:20">
+<div class="card" style="width:min(610px,100%)"><div class="head"><h2>Añadir posición</h2><button class="btn small" onclick="closeModal()">Cerrar</button></div><div class="form">
+<div class="field full"><label>Nombre</label><input id="hN"></div><div class="field"><label>Ticker</label><input id="hT"></div><div class="field"><label>Tipo</label><select id="hA"><option>Acción</option><option>ETF</option><option>Fondo</option><option>Cripto</option><option>Bonos</option><option>Oro</option></select></div>
+<div class="field"><label>Unidades</label><input id="hU" type="number" step=".000001"></div><div class="field"><label>Precio medio</label><input id="hP" type="number" step=".000001"></div><div class="field"><label>Moneda</label><select id="hC"><option>EUR</option><option>USD</option><option>GBP</option></select></div>
+<button class="btn primary full" onclick="saveHolding()">Guardar</button></div></div></div>
+
+<script>
+const $=s=>document.querySelector(s), eur=n=>new Intl.NumberFormat("es-ES",{style:"currency",currency:"EUR",maximumFractionDigits:2}).format(n||0);
+let authMode="login", premium=false, holdings=[], sim=[
+{name:"MSCI World",a:67,r:7,c:.12},{name:"Emergentes",a:33,r:7,c:.23},{name:"Oro",a:0,r:4,c:.12},{name:"Bitcoin",a:0,r:0,c:0}
+];
+const lessons=[
+["Gratis","¿Qué es una acción?","Una acción representa una participación en una empresa. Su precio refleja expectativas y riesgos sobre el negocio y el mercado."],
+["Gratis","¿Qué es un ETF?","Un ETF cotiza en mercado y puede seguir un índice, una cesta o una estrategia. El producto puede tener riesgos, costes y tracking error."],
+["Gratis","Fondos y valor liquidativo","Un fondo tradicional suele publicar un valor liquidativo según la frecuencia establecida. No debe confundirse con una cotización intradía."],
+["Gratis","Diversificación","Diversificar reparte el riesgo entre empresas, sectores, países o clases de activos; no elimina las pérdidas posibles."],
+["Gratis","Volatilidad y drawdown","La volatilidad describe fluctuaciones; el drawdown describe una caída desde un máximo previo. Son métricas diferentes."],
+["Premium","Cómo leer una cuenta de resultados","Ingresos, margen, EBIT, beneficio neto y partidas extraordinarias deben entenderse antes de sacar conclusiones."],
+["Premium","Valoración: PER, EV/EBITDA y FCF","Los múltiplos comparan valoración, pero requieren contexto sobre crecimiento, márgenes, deuda y calidad del negocio."],
+["Premium","Tipos de interés y mercados","Los tipos cambian el coste de financiación y pueden afectar a la valoración de activos de distintas maneras."],
+["Premium","Análisis de una cartera","Aprende a revisar concentración, exposición geográfica, sectores, costes, divisa, correlación y drawdown."],
+["Premium","Criptoactivos: riesgos","Volatilidad, liquidez, custodia, estructura de mercado y marco regulatorio pueden diferir de los activos tradicionales."]
+];
+
+function toggleAuth(){authMode=authMode==="login"?"register":"login";$("#authTitle").textContent=authMode==="login"?"Entrar":"Crear cuenta";$("#authToggle").textContent=authMode==="login"?"Crear cuenta":"Ya tengo cuenta";$("#authMsg").classList.add("hidden")}
+async function api(url,opts={}){const r=await fetch(url,{headers:{"Content-Type":"application/json",...(opts.headers||{})},...opts});let d={};try{d=await r.json()}catch{}if(!r.ok)throw new Error(d.detail||"Error");return d}
+async function authSubmit(){try{const d=await api(authMode==="login"?"/api/login":"/api/register",{method:"POST",body:JSON.stringify({email:$("#authEmail").value,password:$("#authPassword").value})});showApp(d)}catch(e){$("#authMsg").textContent=e.message;$("#authMsg").classList.remove("hidden")}}
+async function boot(){try{const d=await api("/api/me");showApp(d)}catch{}}
+function showApp(d){premium=!!d.premium;$("#authView").classList.add("hidden");$("#appView").classList.remove("hidden");$("#planLabel").textContent=premium?"Premium":"Gratis";loadAll();renderLessons()}
+async function logout(){await api("/api/logout",{method:"POST"});location.reload()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(x=>x.classList.remove("active"));$("#"+b.dataset.page).classList.add("active");$("#title").textContent=b.textContent.trim();if(b.dataset.page==="news")loadNews();if(b.dataset.page==="journal")loadJournal()});
+function totals(){let c=0,v=0;holdings.forEach(h=>{c+=h.units*h.avg_price;v+=h.units*(h.last_price??h.avg_price)});return{c,v,p:v-c,r:c?(v/c-1)*100:0}}
+function render(){const t=totals();$("#dVal").textContent=eur(t.v);$("#dCost").textContent=eur(t.c);$("#dProfit").textContent=eur(t.p);$("#dProfit").className="big "+(t.p>=0?"green":"red");$("#dRet").textContent=(t.r>=0?"+":"")+t.r.toFixed(2).replace(".",",")+"%";$("#dRet").className="big "+(t.r>=0?"green":"red");
+const cats={};holdings.forEach(h=>cats[h.asset_type]=(cats[h.asset_type]||0)+h.units*(h.last_price??h.avg_price));$("#alloc").innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="display:flex;justify-content:space-between;margin:10px 0"><span>${esc(k)}</span><b>${t.v?(v/t.v*100).toFixed(1):0}%</b></div>`).join("")||'<div class="muted">Añade posiciones.</div>';
+$("#marketStatus").textContent=holdings.length?"Pulsa actualizar para consultar las fuentes configuradas.":"Añade posiciones para empezar.";
+renderHoldings();drawChart(t)}
+function renderHoldings(){$("#holdings").innerHTML=holdings.length?holdings.map((h,i)=>{let v=h.units*(h.last_price??h.avg_price),c=h.units*h.avg_price,p=v-c,r=c?100*(v/c-1):0;return `<tr><td><div class="asset"><div class="icon">${esc(h.ticker.slice(0,3))}</div><div><b>${esc(h.name)}</b><div class="muted">${esc(h.ticker)}</div></div></div></td><td>${esc(h.asset_type)}</td><td>${h.units}</td><td>${h.last_price?esc(h.last_price):"—"} ${esc(h.currency)}</td><td>${eur(v)}</td><td class="${r>=0?"green":"red"}">${eur(p)} · ${r.toFixed(2)}%</td><td><button class="btn small" onclick="delHolding(${h.id})">×</button></td></tr>`}).join(""):'<tr><td colspan="7" class="muted">No hay posiciones.</td></tr>'}
+function drawChart(t){const vals=[.97,.95,.99,1.02,.995,1.04,1.02,1.065,1.05,1.08,1.06].map(x=>t.v*x),w=850,h=245,p=20,min=Math.min(...vals)*.98,max=Math.max(...vals)*1.02;const pts=vals.map((v,i)=>[p+i*(w-2*p)/(vals.length-1),h-p-(v-min)/(max-min)*(h-2*p)]);const d=pts.map((q,i)=>(i?"L":"M")+q[0]+" "+q[1]).join(" ");$("#chart").innerHTML=`<path d="${d}" fill="none" stroke="#8ab4ff" stroke-width="3" stroke-linecap="round"/><text x="20" y="20" fill="#748198" font-size="11">Histórico ilustrativo hasta conectar series históricas reales</text>`}
+async function loadAll(){holdings=await api("/api/holdings");render();await api("/api/me").then(d=>{premium=!!d.premium;$("#planLabel").textContent=premium?"Premium":"Gratis";$("#premiumBox").textContent=premium?"Premium activo.":"Gratis: herramientas y formación básica."});}
+function openModal(){$("#modal").style.display="grid"}function closeModal(){$("#modal").style.display="none"}
+async function saveHolding(){const body={name:$("#hN").value,ticker:$("#hT").value,asset_type:$("#hA").value,units:Number($("#hU").value),avg_price:Number($("#hP").value),currency:$("#hC").value};try{await api("/api/holdings",{method:"POST",body:JSON.stringify(body)});closeModal();await loadAll()}catch(e){alert(e.message)}}
+async function delHolding(id){await api("/api/holdings/"+id,{method:"DELETE"});loadAll()}
+async function refreshAll(){try{const d=await api("/api/holdings/refresh",{method:"POST"});$("#status").textContent=`ACTUALIZADOS ${d.updated.length}`;await loadAll()}catch(e){$("#status").textContent="SIN DATOS"}}
+async function doSearch(){const q=$("#search").value;const d=await api("/api/search?q="+encodeURIComponent(q));$("#searchResults").innerHTML=d.map(x=>`<div class="result"><div><b>${esc(x.name||x.symbol)}</b><div class="muted">${esc(x.symbol||"")} · ${esc(x.type||"")} · ${esc(x.exchange||"")}</div></div><button class="btn small" onclick='addSearch(${JSON.stringify(x)})'>Seguir</button></div>`).join("")||'<div class="muted">Sin resultados o proveedor no configurado.</div>'}
+async function addSearch(x){await api("/api/watchlist",{method:"POST",body:JSON.stringify({ticker:x.symbol,name:x.name||x.symbol,asset_type:x.type||"Otro"})});alert("Añadido al seguimiento.")}
+async function health(){const d=await api("/api/health");alert(JSON.stringify(d,null,2))}
+async function loadNews(){const d=await api("/api/news");if(!d.configured){$("#newsBox").textContent=d.message;return}$("#newsBox").className="";$("#newsBox").innerHTML=d.articles.map(a=>`<div class="news"><a href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.title)}</b></a><div class="meta">${esc(a.source||"Fuente")} · ${esc(a.published||"")}</div><div class="muted" style="font-size:11px;line-height:1.5;margin-top:5px">${esc(a.summary||"")}</div></div>`).join("")||"No hay artículos."}
+function simRows(){return sim.map((r,i)=>`<tr><td><input value="${esc(r.name)}" oninput="sim[${i}].name=this.value"></td><td><input type="number" value="${r.a}" step=".1" oninput="sim[${i}].a=Number(this.value);simRun()"></td><td><input type="number" value="${r.r}" step=".1" oninput="sim[${i}].r=Number(this.value);simRun()"></td><td><input type="number" value="${r.c}" step=".01" oninput="sim[${i}].c=Number(this.value);simRun()"></td><td><button class="btn small" onclick="sim.splice(${i},1);simRun()">×</button></td></tr>`).join("")}
+function renderSim(){ $("#simRows").innerHTML=simRows(); }
+function addSim(){sim.push({name:"Nuevo",a:0,r:5,c:.2});renderSim();simRun()}
+function simRun(){renderSim();let I=Number($("#sI").value)||0,M=Number($("#sM").value)||0,Y=Number($("#sY").value)||1,inf=(Number($("#sInf").value)||0)/100,A=sim.reduce((s,r)=>s+r.a,0);$("#sAlloc").textContent=A.toFixed(1)+"%";if(Math.abs(A-100)>.05){$("#sFinal").textContent="—";$("#sReal").textContent="—";$("#simMsg").textContent="La asignación debe sumar exactamente 100%.";return}let bal=sim.map(r=>I*r.a/100),months=Y*12;for(let m=0;m<months;m++)sim.forEach((r,i)=>{let nr=(r.r-r.c)/100,mr=Math.pow(1+Math.max(-.99,nr),1/12)-1;bal[i]*=1+mr;bal[i]+=M*r.a/100});let f=bal.reduce((s,x)=>s+x,0);$("#sFinal").textContent=eur(f);$("#sReal").textContent=eur(f/Math.pow(1+inf,Y));$("#simMsg").textContent=`Aportado: ${eur(I+M*months)}. El resultado depende de hipótesis introducidas por el usuario.`}
+function renderLessons(){$("#lessons").innerHTML=lessons.map((l,i)=>{let locked=l[0]==="Premium"&&!premium;return `<div class="card lesson ${locked?"lock":""}">${locked?"<div class='blur'>":""}<span class="tag">${l[0]}</span><h3>${esc(l[1])}</h3><p>${esc(l[2])}</p>${locked?"</div><div class='premium-overlay'><button class='btn primary' onclick='buyPremium()'>🔒 Premium</button></div>":""}</div>`}).join("")}
+async function buyPremium(){const d=await api("/api/premium/checkout",{method:"POST"});if(d.url)location.href=d.url;else alert(d.message)}
+async function saveJournal(){const d={ticker:$("#jT").value,date:$("#jD").value||new Date().toISOString().slice(0,10),horizon:$("#jH").value,thesis:$("#jX").value};try{await api("/api/journal",{method:"POST",body:JSON.stringify(d)});loadJournal();$("#jX").value=""}catch(e){alert(e.message)}}
+async function loadJournal(){const d=await api("/api/journal");$("#journalList").innerHTML=d.length?d.map(x=>`<div class="news"><b>${esc(x.ticker)}</b><div class="meta">${esc(x.date)} · ${esc(x.horizon)}</div><div class="muted" style="font-size:12px;margin-top:5px">${esc(x.thesis)}</div></div>`).join(""):'<div class="muted">Sin entradas.</div>'}
+function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]))}
+renderSim();boot();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/static/sw.js").catch(()=>{}))}
+</script>
+</body>
+</html>
